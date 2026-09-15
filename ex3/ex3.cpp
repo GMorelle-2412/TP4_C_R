@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
+#include <stdio.h>
 
 using namespace std;
 
@@ -14,24 +15,26 @@ typedef struct student{
 int addStudent(eleve etudent, int actu_student) {
     int nb_total_eleves_enregistres_apres_la_saisie = 0;
     bool saisie_return = 0;
-    
+   
     if (actu_student == 100) {
         cout << "\nVous ne pouvais pas enregistres de nouveau etudient\n";
         return nb_total_eleves_enregistres_apres_la_saisie;
     }
 
     for (int i = actu_student; i < 100; i++) {
+        
         cout << "Mettre un nom : ";
-        cin >> etudent[i].nom;
+        cin.ignore();
+        fgets(etudent[i].nom, 500, stdin);
 
         cout << "\nMettre un Prenom : ";
-        cin >> etudent[i].prenom;
+        fgets(etudent[i].prenom, 500, stdin);
 
         cout << "\nMettre une adresse : ";
-        cin >> etudent[i].adresse;
+        fgets(etudent[i].adresse, 500, stdin);
 
         cout << "\nMettre une classe : ";
-        cin >> etudent[i].classe;
+        fgets(etudent[i].classe, 500, stdin);
 
         nb_total_eleves_enregistres_apres_la_saisie++;
 
@@ -40,7 +43,6 @@ int addStudent(eleve etudent, int actu_student) {
 
         if (saisie_return == 1) return nb_total_eleves_enregistres_apres_la_saisie;
     }
-    
 }
 
 void displayStudent(eleve etudent, int actu_student) {
@@ -57,9 +59,13 @@ void saveStudent(eleve etudent, FILE *fichier, int actu_student) {
     for (int i = 0; i < actu_student; i++) {
 
         fputs(etudent[i].nom, fichier);
+        fputs(" | ", fichier);
         fputs(etudent[i].prenom, fichier);
+        fputs(" | ", fichier);
         fputs(etudent[i].adresse, fichier);
+        fputs(" | ", fichier);
         fputs(etudent[i].classe, fichier);
+        fputs(" | ", fichier);
         fputs("\n", fichier);
     }
 
