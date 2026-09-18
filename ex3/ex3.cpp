@@ -46,7 +46,7 @@ int addStudent(eleve etudent, int actu_student) {
 void displayStudent(eleve etudent, int actu_student) {
 
     for (int i = 0; i < actu_student; i++) {
-        printf("\n| %s| %s| %s| %s\n", etudent[i].nom, etudent[i].prenom, etudent[i].adresse, etudent[i].classe);
+        printf("\n>> %s>> %s>> %s>> %s\n", etudent[i].nom, etudent[i].prenom, etudent[i].adresse, etudent[i].classe);
     }
 }
 
@@ -67,15 +67,95 @@ void saveStudent(eleve etudent, FILE *fichier, int actu_student, char *nom_du_fi
     fclose(fichier);
 }
 
-void loadStudent() {
+int loadStudent(eleve etudent, FILE* fichier, int actu_student) {
 
+    char copicat[500];
+    int nouveau = 0;
+    int index = 0;
+    bool continu = 0;
+
+    fichier = fopen("toto.txt", "r+");
+
+    int n = fread(copicat, 1, 500, fichier);
+
+    copicat[n] = '\0';
+    
+    while (continu == 0) {
+
+        for (int i = 0; i < n; i++) {
+            if (copicat[index] == '\n') {
+                etudent[actu_student + nouveau].nom[i] = '\n';
+                i++;
+                etudent[actu_student + nouveau].nom[i] = '\0';
+                index++;
+                break;
+            }
+            else {
+                etudent[actu_student + nouveau].nom[i] = copicat[index];
+                index++;
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (copicat[index] == '\n') {
+                etudent[actu_student + nouveau].prenom[i] = '\n';
+                i++;
+                etudent[actu_student + nouveau].prenom[i] = '\0';
+                index++;
+                break;
+            }
+            else {
+                etudent[actu_student + nouveau].prenom[i] = copicat[index];
+                index++;
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (copicat[index] == '\n') {
+                etudent[actu_student + nouveau].adresse[i] = '\n';
+                i++;
+                etudent[actu_student + nouveau].adresse[i] = '\0';
+                index++;
+                break;
+            }
+            else {
+                etudent[actu_student + nouveau].adresse[i] = copicat[index];
+                index++;
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (copicat[index] == '\n') {
+                etudent[actu_student + nouveau].classe[i] = '\n';
+                i++;
+                etudent[actu_student + nouveau].classe[i] = '\0';
+                index++;
+                break;
+            }
+            else {
+                etudent[actu_student + nouveau].classe[i] = copicat[index];
+                index++;
+            }
+        }
+
+        if (copicat[index] == '\n' && copicat[index+1] != '\0') index++;
+        else continu = 1;
+
+        nouveau++;
+    }
+
+    fclose(fichier);
+
+    printf("\n");
+
+    return nouveau;
 }
 
 
 int main() {
     FILE fichier;
 
-    student eleve;
+    eleve eleve;
 
     int actu_student = 0;
     int select = 0;
@@ -88,10 +168,10 @@ int main() {
         printf(">>> : ");
         scanf ("%d", &select);
 
-        if (select == 0) actu_student = actu_student + addStudent(&eleve, actu_student);
-        else if (select == 1) displayStudent(&eleve, actu_student);
-        
-        else if (select == 2) { 
+        if (select == 0) actu_student = actu_student + addStudent(eleve, actu_student);
+        else if (select == 1) displayStudent(eleve, actu_student);
+
+        else if (select == 2) {
             printf("Donner le nom du fichier que vous voulais envoiler la sauvegade\n");
             printf(">>> : ");
             fgets(nom_du_fichier, 555, stdin);
@@ -100,10 +180,13 @@ int main() {
             printf(">>> : ");
             fgets(chemin_du_fichier, 555, stdin);
 
-            saveStudent(&eleve, &fichier, actu_student, nom_du_fichier, chemin_du_fichier);
+            saveStudent(eleve, &fichier, actu_student, nom_du_fichier, chemin_du_fichier);
         }
 
-        else if (select == 3) loadStudent();
+        else if (select == 3) { 
+            actu_student = actu_student + loadStudent(eleve, &fichier, actu_student);
+        }
+
         else printf("\nSaisire un valeur corecte\n");
     }
 
