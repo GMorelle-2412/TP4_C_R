@@ -50,9 +50,17 @@ void displayStudent(eleve etudent, int actu_student) {
     }
 }
 
-void saveStudent(eleve etudent, FILE *fichier, int actu_student, char *nom_du_fichier, char *chemin_du_fichier) {
+int saveStudent(eleve etudent, FILE *fichier, int actu_student, char *chemin_du_fichier) {
 
-    fichier = fopen("toto.txt", "r+");
+    for (int i = 0; chemin_du_fichier[i] != '\0'; i++) {
+        if (chemin_du_fichier[i] == '\\') chemin_du_fichier[i] = '/';
+    }
+
+    fichier = fopen(chemin_du_fichier, "w");
+
+    if (fichier == NULL) {
+        return 1;
+    }
 
     for (int i = 0; i < actu_student; i++) {
 
@@ -65,6 +73,7 @@ void saveStudent(eleve etudent, FILE *fichier, int actu_student, char *nom_du_fi
     }
 
     fclose(fichier);
+    return 0;
 }
 
 int loadStudent(eleve etudent, FILE* fichier, int actu_student) {
@@ -160,7 +169,6 @@ int main() {
     int actu_student = 0;
     int select = 0;
 
-    char nom_du_fichier[555];
     char chemin_du_fichier[555];
 
     while (true) {
@@ -172,15 +180,12 @@ int main() {
         else if (select == 1) displayStudent(eleve, actu_student);
 
         else if (select == 2) {
-            printf("Donner le nom du fichier que vous voulais envoiler la sauvegade\n");
-            printf(">>> : ");
-            fgets(nom_du_fichier, 555, stdin);
-
             printf("Donner le chemin du fichier que vous voulais envoiler la sauvegade\n");
             printf(">>> : ");
+            getchar();
             fgets(chemin_du_fichier, 555, stdin);
 
-            saveStudent(eleve, &fichier, actu_student, nom_du_fichier, chemin_du_fichier);
+            saveStudent(eleve, &fichier, actu_student, chemin_du_fichier);
         }
 
         else if (select == 3) { 
